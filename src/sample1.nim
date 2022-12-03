@@ -13,13 +13,14 @@ when isMainModule:
     var g = newGraphics(newOglRenderer())
     g.openWindow(640, 480, "Sample")
 
-    # var path = "some/path/to/model.xyz"
-    # discard g.loadModel(path)
-    # var mi = g.getModelInstance(path)
+    var path = "res/models/duck.dae"
+    discard g.loadModel(path)
+    var mi = g.getModelInstance(path)
 
     var tasks = newSeq[RenderTask]()
-    # for mesh in mi.meshes:
-    #     tasks.add(RenderTask(mode: RenderMode.Projection, modelId: mi.id, meshId: mesh.meshId))
+    for mesh in mi.meshes:
+        echo "Mesh id: ", mesh.meshId
+        tasks.add(RenderTask(mode: RenderMode.Projection, modelId: mi.id, meshId: mesh.meshId))
 
     while g.isRunning():
         g.render(tasks)
