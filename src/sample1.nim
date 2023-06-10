@@ -4,6 +4,7 @@
 import graphics
 import graphics/oglrenderer
 import std/logging
+import glm
 
 when isMainModule:
     let fmtStr = "[$time] - $levelname: "
@@ -12,15 +13,16 @@ when isMainModule:
 
     var g = newGraphics(newOglRenderer())
     g.openWindow(640, 480, "Sample")
+    g.getRenderer().setCameraEye(vec3f(0, 0, 100))
 
     var path = "res/models/duck.dae"
-    discard g.loadModel(path)
-    var mi = g.getModelInstance(path)
+    var modelId = g.loadModel(path)
+    var mi = g.getModelInstance(modelId)
 
     var tasks = newSeq[RenderTask]()
     for mesh in mi.meshes:
-        echo "Mesh id: ", mesh.meshId
-        tasks.add(RenderTask(mode: RenderMode.Projection, modelId: mi.id, meshId: mesh.meshId))
+        # Where do we store the translate and rotation and scale?
+        tasks.add(RenderTask(mode: RenderMode.Projection, modelId: mi.id, meshId: mesh.meshId, matrix: translate(mat4f(), mesh.translation) * glm.mat4(mesh.rotation) * glm.scale(mat4f(), vec3f(0.2f, 0.2f, 0.2f))))
 
     while g.isRunning():
         g.render(tasks)
