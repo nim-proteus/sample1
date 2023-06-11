@@ -19,3 +19,11 @@ method update*(this: Acceleration) =
     for c in this.components.values:
         var v = this.getEcs().getComponent[:HasVelocity](c.entityId)
         v.vel = v.vel + (c.accel * elapsed)
+
+proc newHasAcceleration*(): HasAcceleration =
+    result = HasAcceleration()
+    result.accel = vec3(0f, 0f, 0f)
+
+proc newAcceleration*(): Acceleration =
+    result = Acceleration()
+    result.components = newTable[ComponentId, HasAcceleration]()

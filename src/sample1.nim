@@ -5,6 +5,10 @@ import graphics
 import graphics/oglrenderer
 import std/logging
 import glm
+import ecs
+import systems/acceleration
+import systems/location
+import systems/velocity
 
 when isMainModule:
     let fmtStr = "[$time] - $levelname: "
@@ -19,10 +23,26 @@ when isMainModule:
     var modelId = g.loadModel(path)
     var mi = g.getModelInstance(modelId)
 
-    var tasks = newSeq[RenderTask]()
-    for mesh in mi.meshes:
-        # Where do we store the translate and rotation and scale?
-        tasks.add(RenderTask(mode: RenderMode.Projection, modelId: mi.id, meshId: mesh.meshId, matrix: translate(mat4f(), mesh.translation) * glm.mat4(mesh.rotation) * glm.scale(mat4f(), vec3f(0.2f, 0.2f, 0.2f))))
+    var e = newEcs()
+    # Add systems: acceleration, lookat, velocity
 
+    e.register(
+        newEntity(),
+        newHasLocation(),
+        newHasAcceleration(),
+        newHasVelocity())
+
+    e.register(
+        newAcceleration(),
+        newVelocity())
+
+    var inc = vec3(0f, 0f, 0f)
     while g.isRunning():
+        var tasks = newSeq[RenderTask]()
+        for mesh in mi.meshes:
+            # Where do we store the translate and rotation and scale?
+            var translation = mesh.translation + inc
+            tasks.add(RenderTask(mode: RenderMode.Projection, modelId: mi.id, meshId: mesh.meshId, matrix: translate(mat4f(), translation) * glm.mat4(mesh.rotation) * glm.scale(mat4f(), vec3f(0.02f, 0.02f, 0.02f))))
+            inc += vec3(0f, 0f, 0.001f)
         g.render(tasks)
+        e.update()
