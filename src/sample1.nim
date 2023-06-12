@@ -30,14 +30,20 @@ when isMainModule:
     var e = newEcs()
 
     e.register(
+        newAcceleration(),
+        newVelocity())
+
+    var entityId = e.register(
         newEntity(),
         newHasLocation(),
         newHasAcceleration(),
         newHasVelocity())
 
-    e.register(
-        newAcceleration(),
-        newVelocity())
+    var hasVelocity = e.getComponent[:HasVelocity](entityId)
+    hasVelocity.rot = vec3f(0f, 0.0f, 0f)
+
+    var hasAcceleration = e.getComponent[:HasAcceleration](entityId)
+    hasAcceleration.rot = vec3f(0f, 0.1f, 0f)
 
     var inc = vec3(0f, 0f, 0f)
     while g.isRunning():
@@ -45,7 +51,9 @@ when isMainModule:
         for mesh in mi.meshes:
             # Where do we store the translate and rotation and scale?
             var translation = vec3f(0f, 0f, 20f)
-            mesh.rotation = quat(glm.rotate(mat4f(), 0.0001f, vec3f(0f, 0f, -1f))) * mesh.rotation
+            # mesh.rotation = quat(glm.rotate(mat4f(), 0.0001f, hasVelocity.rot)) * mesh.rotation
+            # info hasVelocity.rot
+            mesh.rotation = quat(glm.rotate(mat4f(), 0.0001f, hasAcceleration.rot)) * mesh.rotation
             tasks.add(RenderTask(mode: RenderMode.Projection, modelId: mi.id, meshId: mesh.meshId, matrix: translate(mat4f(), translation) * glm.mat4(mesh.rotation) * glm.scale(mat4f(), vec3f(0.1f, 0.1f, 0.1f))))            
             # inc += vec3f(0f, 0f, 0.01f)
             g.getRenderer().setCameraLookAt(translation)

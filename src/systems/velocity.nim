@@ -5,6 +5,7 @@ import std/tables
 type
     HasVelocity* = ref object of Component
         vel*: Vec3f
+        rot*: Vec3f
 
     Velocity* = ref object of System
         components: TableRef[ComponentId, HasVelocity]
@@ -19,10 +20,12 @@ method update*(this: Velocity) =
     for c in this.components.values:
         var v = this.getEcs().getComponent[:HasVelocity](c.entityId)
         v.vel = v.vel + (c.vel * elapsed)
+        v.rot = v.rot + (c.rot * elapsed)
 
 proc newHasVelocity*(): HasVelocity =
     result = HasVelocity()
     result.vel = vec3(0f, 0f, 0f)
+    result.rot = vec3(0f, 0f, 0f)
 
 proc newVelocity*(): Velocity =
     result = Velocity()
