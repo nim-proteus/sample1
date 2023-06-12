@@ -17,14 +17,17 @@ when isMainModule:
 
     var g = newGraphics(newOglRenderer())
     g.openWindow(640, 480, "Sample")
-    g.getRenderer().setCameraEye(vec3f(0, 0, 100))
-
+    g.getRenderer().setCameraEye(vec3f(-50f, -50f, 70))
+    var id = g.getRenderer().loadShaderProgram(
+        io.readFile("res/shaders/vertex.glsl"), 
+        io.readFile("res/shaders/fragment.glsl"))
+    g.getRenderer().useShaderProgram(id)
+    
     var path = "res/models/duck.dae"
     var modelId = g.loadModel(path)
     var mi = g.getModelInstance(modelId)
 
     var e = newEcs()
-    # Add systems: acceleration, lookat, velocity
 
     e.register(
         newEntity(),
@@ -41,8 +44,10 @@ when isMainModule:
         var tasks = newSeq[RenderTask]()
         for mesh in mi.meshes:
             # Where do we store the translate and rotation and scale?
-            var translation = mesh.translation + inc
-            tasks.add(RenderTask(mode: RenderMode.Projection, modelId: mi.id, meshId: mesh.meshId, matrix: translate(mat4f(), translation) * glm.mat4(mesh.rotation) * glm.scale(mat4f(), vec3f(0.02f, 0.02f, 0.02f))))
-            inc += vec3(0f, 0f, 0.001f)
+            var translation = vec3f(0f, 0f, 20f)
+            mesh.rotation = quat(glm.rotate(mat4f(), 0.0001f, vec3f(0f, 0f, -1f))) * mesh.rotation
+            tasks.add(RenderTask(mode: RenderMode.Projection, modelId: mi.id, meshId: mesh.meshId, matrix: translate(mat4f(), translation) * glm.mat4(mesh.rotation) * glm.scale(mat4f(), vec3f(0.1f, 0.1f, 0.1f))))            
+            # inc += vec3f(0f, 0f, 0.01f)
+            g.getRenderer().setCameraLookAt(translation)
         g.render(tasks)
         e.update()
