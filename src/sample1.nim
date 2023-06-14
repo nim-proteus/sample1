@@ -30,22 +30,24 @@ when isMainModule:
     var e = newEcs()
 
     e.register(
-        # newAcceleration(),
+        newAcceleration(),
         newVelocity())
 
     var entityId = e.register(
         newEntity(),
-        newHasLocation(vec3f(0f, 0f, 0f), vec3f(0f, 0f, 0f), quat(vec3f(0, 0.1f, 0), 0.001f)),
+        newHasLocation(vec3f(0f, 0f, 20f), vec3f(0f, 0f, 0f), quat(vec3f(0, 0.1f, 0), 0.001f)),
         newHasAcceleration(),
         newHasVelocity())
 
     var hasLocation = e.getComponent[:HasLocation](entityId)
 
     var hasVelocity = e.getComponent[:HasVelocity](entityId)
-    hasVelocity.rot = quat(vec3f(0f, 0.1f, 0f), 0.01f)
+    hasVelocity.vel = vec3f(0f, 0f, 0.0f)
+    hasVelocity.rot = quat(vec3f(0f, 0.1f, 0f), 0.1f)
 
     var hasAcceleration = e.getComponent[:HasAcceleration](entityId)
-    hasAcceleration.rot = quat(vec3f(0f, 0.1f, 0f), 0.001f)
+    hasAcceleration.vel = vec3f(0f, 0f, 0.0f)
+    hasAcceleration.rot = quat(vec3f(0f, 0.1f, 0f), 0.01f)
     
     var i = 0
     while g.isRunning():
@@ -53,7 +55,8 @@ when isMainModule:
         echo "FRAME: ", i
         var tasks = newSeq[RenderTask]()
         for mesh in mi.meshes:
-            var translation = vec3f(0f, 0f, 20f)
+            echo hasLocation.loc
+            var translation = hasLocation.loc
             mesh.rotation = hasLocation.rot
             tasks.add(RenderTask(
                 mode: RenderMode.Projection, 

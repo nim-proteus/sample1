@@ -21,19 +21,7 @@ method update*(this: Velocity) =
     for c in this.components.values:
         var l = this.getEcs().getComponent[:HasLocation](c.entityId)
         l.loc = l.loc + (c.vel * elapsed)
-        # quat(glm.rotate(mat4f(), 0.0001f, hasAcceleration.rot)) * mesh.rotation
-        # v.rot = v.rot + quat(quat.axis(c.rot), quat.angle(c.rot) * (1f + elapsed))
-        # echo "BEFORE"
-        # echo "axis: ", quat.axis(l.rot)
-        # echo "angle: ", quat.angle(l.rot)
-        # echo "ACCEL"
-        # echo "axis: ", quat.axis(c.rot)
-        # echo "angle: ", quat.angle(c.rot)
         l.rot = quat(glm.rotate(mat4f(), quat.angle(c.rot) * elapsed, quat.axis(c.rot))) * l.rot
-        # echo "AFTER"
-        # echo "axis: ", quat.axis(l.rot)
-        # echo "angle: ", quat.angle(l.rot)
-        # quit 0
 
 proc newHasVelocity*(): HasVelocity =
     result = HasVelocity()

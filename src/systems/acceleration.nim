@@ -20,7 +20,7 @@ method update*(this: Acceleration) =
     for c in this.components.values:
         var v = this.getEcs().getComponent[:HasVelocity](c.entityId)
         v.vel = v.vel + (c.vel * elapsed)
-        v.rot = v.rot + (c.rot * elapsed)
+        v.rot = quat(glm.rotate(mat4f(), quat.angle(c.rot) * elapsed, quat.axis(c.rot))) * v.rot
 
 proc newHasAcceleration*(): HasAcceleration =
     result = HasAcceleration()
