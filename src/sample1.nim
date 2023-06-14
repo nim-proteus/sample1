@@ -30,32 +30,40 @@ when isMainModule:
     var e = newEcs()
 
     e.register(
-        newAcceleration(),
+        # newAcceleration(),
         newVelocity())
 
     var entityId = e.register(
         newEntity(),
-        newHasLocation(),
+        newHasLocation(vec3f(0f, 0f, 0f), vec3f(0f, 0f, 0f), quat(vec3f(0, 0.1f, 0), 0.001f)),
         newHasAcceleration(),
         newHasVelocity())
 
+    var hasLocation = e.getComponent[:HasLocation](entityId)
+
     var hasVelocity = e.getComponent[:HasVelocity](entityId)
-    hasVelocity.rot = vec3f(0f, 0.0f, 0f)
+    hasVelocity.rot = quat(vec3f(0f, 0.1f, 0f), 0.01f)
 
     var hasAcceleration = e.getComponent[:HasAcceleration](entityId)
-    hasAcceleration.rot = vec3f(0f, 0.1f, 0f)
-
-    var inc = vec3(0f, 0f, 0f)
+    hasAcceleration.rot = quat(vec3f(0f, 0.1f, 0f), 0.001f)
+    
+    var i = 0
     while g.isRunning():
+        echo "========================>"
+        echo "FRAME: ", i
         var tasks = newSeq[RenderTask]()
         for mesh in mi.meshes:
-            # Where do we store the translate and rotation and scale?
             var translation = vec3f(0f, 0f, 20f)
-            # mesh.rotation = quat(glm.rotate(mat4f(), 0.0001f, hasVelocity.rot)) * mesh.rotation
-            # info hasVelocity.rot
-            mesh.rotation = quat(glm.rotate(mat4f(), 0.0001f, hasAcceleration.rot)) * mesh.rotation
-            tasks.add(RenderTask(mode: RenderMode.Projection, modelId: mi.id, meshId: mesh.meshId, matrix: translate(mat4f(), translation) * glm.mat4(mesh.rotation) * glm.scale(mat4f(), vec3f(0.1f, 0.1f, 0.1f))))            
-            # inc += vec3f(0f, 0f, 0.01f)
+            mesh.rotation = hasLocation.rot
+            tasks.add(RenderTask(
+                mode: RenderMode.Projection, 
+                modelId: mi.id, 
+                meshId: mesh.meshId, 
+                matrix: translate(mat4f(), translation) * 
+                    glm.mat4(mesh.rotation) * 
+                    glm.scale(mat4f(), vec3f(0.1f, 0.1f, 0.1f))))            
             g.getRenderer().setCameraLookAt(translation)
         g.render(tasks)
         e.update()
+
+        i += 1

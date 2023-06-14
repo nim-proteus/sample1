@@ -6,7 +6,7 @@ import ./velocity
 type
     HasAcceleration* = ref object of Component
         vel*: Vec3f
-        rot*: Vec3f
+        rot*: Quatf
 
     Acceleration* = ref object of System
         components: TableRef[ComponentId, HasAcceleration]
@@ -16,7 +16,6 @@ method register*(this: Acceleration, c: Component) =
         this.components[c.getId()] = (HasAcceleration)c
 
 method update*(this: Acceleration) =
-    echo "Updating Acceleration"
     let elapsed = 0.01f
     for c in this.components.values:
         var v = this.getEcs().getComponent[:HasVelocity](c.entityId)
@@ -26,7 +25,7 @@ method update*(this: Acceleration) =
 proc newHasAcceleration*(): HasAcceleration =
     result = HasAcceleration()
     result.vel = vec3(0f, 0f, 0f)
-    result.rot = vec3(0f, 0f, 0f)
+    result.rot = quat(vec3f(0f, 1f, 0f), 0f)
 
 proc newAcceleration*(): Acceleration =
     result = Acceleration()
