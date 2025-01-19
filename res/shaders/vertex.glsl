@@ -5,12 +5,12 @@ layout (location = 1) in vec3 normal;
 layout (location = 2) in vec3 uv;
 
 uniform mat4 mvp;
-out vec3 oNormal;
-out vec2 oUv;
+out vec3 Normal;
+out vec2 Uv;
 
 void main()
 {
     gl_Position = mvp * vec4(vertexPosition, 1.0);
-    oNormal = normal;
-    oUv = uv.xy;
+    Normal = normal;
+    Uv = uv.xy;
 }

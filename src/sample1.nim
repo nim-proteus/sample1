@@ -47,15 +47,14 @@ when isMainModule:
 
     var hasAcceleration = e.getComponent[:HasAcceleration](entityId)
     hasAcceleration.vel = vec3f(0f, 0f, 0.0f)
-    hasAcceleration.rot = quat(vec3f(0f, 0.1f, 0f), 0.01f)
+    hasAcceleration.rot = quat(vec3f(0f, 0.1f, 0f), 0.001f)
     
     var i = 0
     while g.isRunning():
-        echo "========================>"
-        echo "FRAME: ", i
+        # echo "========================>"
+        # echo "FRAME: ", i
         var tasks = newSeq[RenderTask]()
         for mesh in mi.meshes:
-            echo hasLocation.loc
             var translation = hasLocation.loc
             mesh.rotation = hasLocation.rot
             tasks.add(RenderTask(
@@ -68,5 +67,5 @@ when isMainModule:
             g.getRenderer().setCameraLookAt(translation)
         g.render(tasks)
         e.update()
-
+        # echo "quat.angle(hasLocation.rot): ", quat.angle(hasLocation.rot)
         i += 1
