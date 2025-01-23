@@ -12,7 +12,13 @@ brew install assimp
 Add the ASSIMP_LIBRARY_PATH to your environment variables. On MacOS:
 
 ```bash
-export ASSIMP_LIBRARY_PATH=/usr/local/lib/libassimp.dylib
+export ASSIMP_LIBRARY_PATH=/opt/b
+```
+
+Install nimgl/glfw
+
+```bash
+nimble install https://github.com/nimgl/glfw.git
 ```
 
 ## Running

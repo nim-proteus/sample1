@@ -1,3 +1,3 @@
-if existsEnv("ASSIMP_LIB_PATH"):
+if existsEnv("ASSIMP_LIBRARY_PATH"):
   --dynlibOverride:assimp
-  --passL:"$ASSIMP_LIB_PATH"
+  --passL:"$ASSIMP_LIBRARY_PATH"

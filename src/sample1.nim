@@ -19,8 +19,8 @@ when isMainModule:
     g.openWindow(640, 480, "Sample")
     g.getRenderer().setCameraEye(vec3f(-50f, -50f, 70))
     var id = g.getRenderer().loadShaderProgram(
-        io.readFile("res/shaders/vertex.glsl"), 
-        io.readFile("res/shaders/fragment.glsl"))
+        readFile("res/shaders/vertex.glsl"), 
+        readFile("res/shaders/fragment.glsl"))
     g.getRenderer().useShaderProgram(id)
     
     var path = "res/models/duck.dae"
