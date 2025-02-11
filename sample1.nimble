@@ -10,6 +10,6 @@ bin           = @["sample1"]
 
 # Dependencies
 
-requires "nim >= 1.6.6"
+requires "nim >= 2.2.0"
 requires "https://github.com/nim-proteus/ecs"
 requires "https://github.com/nim-proteus/graphics"
